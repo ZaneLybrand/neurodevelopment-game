@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Neurodevelopment: Interactive Builder</title>
+<style>
+  :root { --bg:#f7f7fb; --card:#ffffff; --ink:#1f2937; --muted:#6b7280; --accent:#2563eb; --good:#16a34a; --bad:#dc2626; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--ink); }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  h1 { font-size: clamp(1.6rem, 2.4vw, 2.2rem); margin: 0 0 6px; }
+  h3 { margin: 0 0 8px; }
+  p.lead { color: var(--muted); margin-top: 0; }
+  .grid { display:grid; gap: 16px; }
+  .card { background: var(--card); border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; box-shadow: 0 1px 1px rgba(0,0,0,0.04); }
+  .row { display:flex; align-items:center; justify-content:space-between; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .muted { color: var(--muted); font-size: 0.92rem; }
+  .btn { appearance:none; border:1px solid #e5e7eb; background:#fff; padding:8px 12px; border-radius: 12px; cursor:pointer; }
+  .btn:hover { border-color:#cbd5e1; }
+  .btn.primary { background: var(--accent); color:#fff; border-color: var(--accent); }
+  .btn.ghost { background: transparent; }
+  .list { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+  .item { background:#f3f4f6; border:1px solid #e5e7eb; border-radius: 12px; padding:10px; cursor:grab; }
+  .item:active { cursor:grabbing; }
+  .bins { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
+  .bin, .pool { background:#f9fafb; border:1px dashed #cbd5e1; border-radius: 14px; padding:12px; min-height: 140px; }
+  .bin h4, .pool h4 { margin:0 0 8px; font-size: 1rem; }
+  .chip { display:inline-block; background:#fff; border:1px solid #e5e7eb; border-radius: 999px; padding:6px 10px; margin:4px; font-size: 0.92rem; cursor:grab; }
+  .feedback { margin-top: 10px; font-size: 0.95rem; }
+  .good { color: var(--good); }
+  .bad { color: var(--bad); }
+  footer { color: var(--muted); font-size: 0.8rem; margin-top: 18px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Neurodevelopment: Interactive Builder</h1>
+      <p class="lead">Drag-and-drop mini-games to practice embryonic sequencing, tissue derivatives, and vesicle → adult brain mapping.</p>
+    </header>
+
+    <div class="grid">
+
+      <!-- Activity 1: Ordering -->
+      <section class="card" id="a1">
+        <div class="row">
+          <h3>1) Order the early embryonic stages</h3>
+          <div>
+            <button class="btn" id="a1-check">Check</button>
+            <button class="btn" id="a1-shuffle">Shuffle</button>
+          </div>
+        </div>
+        <p class="muted">Drag cards to arrange. Only the canonical first four stages will be graded (distractors included for challenge).</p>
+        <div class="list" id="a1-list"></div>
+        <div class="feedback" id="a1-fb"></div>
+      </section>
+
+      <!-- Activity 2: Derivatives Sort -->
+      <section class="card" id="a2">
+        <div class="row">
+          <h3>2) Sort derivatives into the correct embryonic source</h3>
+          <div>
+            <button class="btn" id="a2-check">Check</button>
+            <button class="btn" id="a2-reset">Reset</button>
+          </div>
+        </div>
+        <div class="bins">
+          <div class="pool" id="a2-pool" data-bin="pool">
+            <h4>Item Pool</h4>
+            <div class="chips" id="a2-pool-chips"></div>
+          </div>
+          <div class="bin" id="a2-tube" data-bin="tube">
+            <h4>Neural Tube (CNS)</h4>
+            <div class="chips"></div>
+          </div>
+          <div class="bin" id="a2-crest" data-bin="crest">
+            <h4>Neural Crest</h4>
+            <div class="chips"></div>
+          </div>
+          <div class="bin" id="a2-somite" data-bin="somite">
+            <h4>Somites</h4>
+            <div class="chips"></div>
+          </div>
+        </div>
+        <div class="feedback" id="a2-fb"></div>
+      </section>
+
+      <!-- Activity 3: Vesicle Match -->
+      <section class="card" id="a3">
+        <div class="row">
+          <h3>3) Match primary brain vesicles to adult derivatives</h3>
+          <div>
+            <button class="btn" id="a3-check">Check</button>
+            <button class="btn" id="a3-reset">Reset</button>
+          </div>
+        </div>
+        <div class="bins">
+          <div class="pool" id="a3-pool" data-bin="pool">
+            <h4>Item Pool</h4>
+            <div class="chips" id="a3-pool-chips"></div>
+          </div>
+          <div class="bin" id="a3-pro" data-bin="pro">
+            <h4>Prosencephalon</h4>
+            <div class="chips"></div>
+          </div>
+          <div class="bin" id="a3-mes" data-bin="mes">
+            <h4>Mesencephalon</h4>
+            <div class="chips"></div>
+          </div>
+          <div class="bin" id="a3-rhom" data-bin="rhom">
+            <h4>Rhombencephalon</h4>
+            <div class="chips"></div>
+          </div>
+        </div>
+        <div class="feedback" id="a3-fb"></div>
+      </section>
+
+    </div>
+
+    <footer>Tip: Project this in class or share the file with students. Progress isn’t saved—students can screenshot their results for submission.</footer>
+  </div>
+
+<script>
+// Utils
+const shuffle = (arr) => {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+// ---------------- Activity 1: Ordering ----------------
+(function(){
+  const correct = ["Fertilization","Blastula","Gastrulation","Neurulation"];
+  const distractors = ["Synaptogenesis (distractor)","Migration (distractor)"];
+  const listEl = document.getElementById("a1-list");
+  const fb = document.getElementById("a1-fb");
+  const btnCheck = document.getElementById("a1-check");
+  const btnShuffle = document.getElementById("a1-shuffle");
+
+  let items = [];
+
+  function render() {
+    listEl.innerHTML = "";
+    items.forEach((txt, idx) => {
+      const li = document.createElement("div");
+      li.className = "item";
+      li.textContent = txt;
+      li.draggable = true;
+      li.dataset.index = idx;
+      li.addEventListener("dragstart", (e)=>{
+        e.dataTransfer.setData("text/plain", idx);
+      });
+      li.addEventListener("dragover", (e)=> e.preventDefault());
+      li.addEventListener("drop", (e)=>{
+        e.preventDefault();
+        const from = +e.dataTransfer.getData("text/plain");
+        const to = idx;
+        if (from === to) return;
+        const a = items.slice();
+        const [m] = a.splice(from,1);
+        a.splice(to,0,m);
+        items = a;
+        render();
+      });
+      listEl.appendChild(li);
+    });
+  }
+
+  function init() {
+    items = shuffle([...correct, ...distractors]);
+    fb.textContent = "";
+    render();
+  }
+
+  btnCheck.addEventListener("click", ()=>{
+    // evaluate only first four canonical entries among the ordered list (ignoring distractors)
+    const filtered = items.filter(x => correct.includes(x)).slice(0,4);
+    const ok = JSON.stringify(filtered) === JSON.stringify(correct);
+    fb.textContent = ok ? "✅ Correct chronological order!" : "❌ Not quite—recheck gastrulation vs neurulation.";
+    fb.className = "feedback " + (ok ? "good" : "bad");
+  });
+
+  btnShuffle.addEventListener("click", init);
+
+  init();
+})();
+
+// ---------------- Activity 2: Derivatives Sort ----------------
+(function(){
+  const startItems = [
+    { id:"CNS", text:"CNS (brain & spinal cord)", correct:"tube" },
+    { id:"PNS", text:"PNS (sensory & autonomic)", correct:"crest" },
+    { id:"ENS", text:"Enteric nervous system", correct:"crest" },
+    { id:"GliaCrest", text:"Peripheral glia (Schwann, satellite)", correct:"crest" },
+    { id:"Mel", text:"Melanocytes", correct:"crest" },
+    { id:"Cranio", text:"Craniofacial cartilage/bone", correct:"crest" },
+    { id:"Vertebrae", text:"Vertebrae (sclerotome)", correct:"somite" },
+    { id:"Muscle", text:"Skeletal muscle (myotome)", correct:"somite" },
+    { id:"Dermis", text:"Dermis of skin (dermatome)", correct:"somite" },
+  ];
+
+  const bins = {
+    pool: document.getElementById("a2-pool"),
+    tube: document.getElementById("a2-tube"),
+    crest: document.getElementById("a2-crest"),
+    somite: document.getElementById("a2-somite"),
+  };
+  const poolChips = document.getElementById("a2-pool-chips");
+  const fb = document.getElementById("a2-fb");
+  const btnCheck = document.getElementById("a2-check");
+  const btnReset = document.getElementById("a2-reset");
+
+  let state = { pool: [], tube:[], crest:[], somite:[] };
+
+  function makeChip(item, fromBin) {
+    const d = document.createElement("span");
+    d.className = "chip";
+    d.textContent = item.text;
+    d.draggable = true;
+    d.dataset.id = item.id;
+    d.dataset.from = fromBin;
+    d.addEventListener("dragstart", (e)=>{
+      e.dataTransfer.setData("text/plain", JSON.stringify({ id:item.id, from:fromBin }));
+    });
+    return d;
+  }
+
+  function render() {
+    // clear all bins' chip containers
+    Object.values(bins).forEach(b => {
+      const area = b.querySelector(".chips");
+      if (area) area.innerHTML = "";
+    });
+    // pool
+    state.pool.forEach(it => poolChips.appendChild(makeChip(it, "pool")));
+    // others
+    ["tube","crest","somite"].forEach(key => {
+      const area = bins[key].querySelector(".chips");
+      state[key].forEach(it => area.appendChild(makeChip(it, key)));
+    });
+  }
+
+  function dropHandler(e, targetKey) {
+    e.preventDefault();
+    const data = JSON.parse(e.dataTransfer.getData("text/plain") || "{}");
+    if (!data.id) return;
+    const fromKey = data.from;
+    // remove from source
+    if (!state[fromKey]) return;
+    const idx = state[fromKey].findIndex(x => x.id === data.id);
+    if (idx < 0) return;
+    const [moved] = state[fromKey].splice(idx,1);
+    // add to target
+    state[targetKey].push(moved);
+    render();
+  }
+
+  function attachDnD(el, key) {
+    el.addEventListener("dragover", e => e.preventDefault());
+    el.addEventListener("drop", e => dropHandler(e, key));
+  }
+
+  function init() {
+    state = { pool: shuffle(startItems.slice()), tube:[], crest:[], somite:[] };
+    fb.textContent = "";
+    fb.className = "feedback";
+    render();
+  }
+
+  attachDnD(bins.pool, "pool");
+  attachDnD(bins.tube, "tube");
+  attachDnD(bins.crest, "crest");
+  attachDnD(bins.somite, "somite");
+
+  btnCheck.addEventListener("click", ()=>{
+    const all = [...state.tube, ...state.crest, ...state.somite];
+    const total = startItems.length;
+    let correctCount = 0;
+    all.forEach(x => {
+      if (state[x.correct].some(y => y.id === x.id)) correctCount++;
+    });
+    const ok = correctCount === total;
+    fb.textContent = ok ? "✅ Perfect! All derivatives sorted correctly." : `⚠️ ${correctCount}/${total} correct—remember: vertebrae/muscle/dermis are somite-derived.`;
+    fb.className = "feedback " + (ok ? "good" : "bad");
+  });
+
+  btnReset.addEventListener("click", init);
+  init();
+})();
+
+// ---------------- Activity 3: Vesicle Match ----------------
+(function(){
+  const bins = {
+    pool: document.getElementById("a3-pool"),
+    pro: document.getElementById("a3-pro"),
+    mes: document.getElementById("a3-mes"),
+    rhom: document.getElementById("a3-rhom"),
+  };
+  const poolChips = document.getElementById("a3-pool-chips");
+  const fb = document.getElementById("a3-fb");
+  const btnCheck = document.getElementById("a3-check");
+  const btnReset = document.getElementById("a3-reset");
+
+  const targets = {
+    pro: ["Telencephalon","Diencephalon","Lateral ventricles (via telencephalon)"],
+    mes: ["Midbrain"],
+    rhom:["Pons","Medulla","Cerebellum"]
+  };
+  const allChips = Object.values(targets).flat();
+
+  let state = { pool: [], pro:[], mes:[], rhom:[] };
+
+  function makeChip(label, fromBin) {
+    const d = document.createElement("span");
+    d.className = "chip";
+    d.textContent = label;
+    d.draggable = true;
+    d.dataset.label = label;
+    d.dataset.from = fromBin;
+    d.addEventListener("dragstart", (e)=>{
+      e.dataTransfer.setData("text/plain", JSON.stringify({ label, from:fromBin }));
+    });
+    return d;
+  }
+
+  function render() {
+    // clear bins
+    Object.values(bins).forEach(b => {
+      const area = b.querySelector(".chips");
+      if (area) area.innerHTML = "";
+    });
+    // pool
+    state.pool.forEach(lbl => poolChips.appendChild(makeChip(lbl, "pool")));
+    // others
+    ["pro","mes","rhom"].forEach(key => {
+      const area = bins[key].querySelector(".chips");
+      state[key].forEach(lbl => area.appendChild(makeChip(lbl, key)));
+    });
+  }
+
+  function dropHandler(e, targetKey) {
+    e.preventDefault();
+    const data = JSON.parse(e.dataTransfer.getData("text/plain") || "{}");
+    if (!data.label && data.label !== "") return;
+    const fromKey = data.from;
+    // remove from source
+    const src = state[fromKey];
+    const idx = src.indexOf(data.label);
+    if (idx < 0) return;
+    src.splice(idx,1);
+    // add to target
+    state[targetKey].push(data.label);
+    render();
+  }
+
+  function attachDnD(el, key) {
+    el.addEventListener("dragover", e => e.preventDefault());
+    el.addEventListener("drop", e => dropHandler(e, key));
+  }
+
+  function init() {
+    state = { pool: shuffle(allChips.slice()), pro:[], mes:[], rhom:[] };
+    fb.textContent = "";
+    fb.className = "feedback";
+    render();
+  }
+
+  attachDnD(bins.pool, "pool");
+  attachDnD(bins.pro, "pro");
+  attachDnD(bins.mes, "mes");
+  attachDnD(bins.rhom, "rhom");
+
+  btnCheck.addEventListener("click", ()=>{
+    const ok = ["pro","mes","rhom"].every(key => {
+      const placed = state[key].slice().sort();
+      const target = targets[key].slice().sort();
+      return JSON.stringify(placed) === JSON.stringify(target);
+    });
+    fb.textContent = ok ? "✅ Nicely done! Vesicle matches are correct." : "❌ Some matches are off—double-check mesencephalon (midbrain only).";
+    fb.className = "feedback " + (ok ? "good" : "bad");
+  });
+
+  btnReset.addEventListener("click", init);
+  init();
+})();
+</script>
+</body>
+</html>
